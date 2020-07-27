@@ -3,6 +3,7 @@ package gui;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
+import java.util.function.Consumer;
 
 import application.Main;
 import gui.util.Alertas;
@@ -35,12 +36,16 @@ public class MainViewController implements Initializable {
 
 	@FXML
 	public void onMenuItemDepartamentoAction() {
-		loadView2("/gui/DepartmentList.fxml");
+		loadView("/gui/DepartmentList.fxml", (DepartmentListController controller) -> {
+			controller.setServico(new DepartamentoServico());
+			controller.updateTableView();
+		});
 	}
 
 	@FXML
 	public void onMenuItemAboutAction() {
-		loadView("/gui/About.fxml");
+		loadView("/gui/About.fxml", x -> {
+		});
 	}
 
 	@Override
@@ -49,44 +54,24 @@ public class MainViewController implements Initializable {
 
 	}
 
-	private synchronized void loadView(String nomeAbsoluto) {
+	private synchronized <T> void loadView(String nomeAbsoluto, Consumer<T> inicializingAction) {
 		try {
 			FXMLLoader loader = new FXMLLoader(getClass().getResource(nomeAbsoluto));
 			VBox newVbox = loader.load();
 
 			Scene mainScene = Main.getMainScene();
 			VBox mainVbox = (VBox) ((ScrollPane) mainScene.getRoot()).getContent();
-			
+
 			Node mainMenu = mainVbox.getChildren().get(0);
 			mainVbox.getChildren().clear();
 			mainVbox.getChildren().add(mainMenu);
 			mainVbox.getChildren().addAll(newVbox.getChildren());
 
-		} catch (IOException e) {
-			Alertas.showAlerta("IO Exception", "Erro Carregando View", e.getMessage(), AlertType.ERROR);
-		}
-	}
-
-	private synchronized void loadView2(String nomeAbsoluto) {
-		try {
-			FXMLLoader loader = new FXMLLoader(getClass().getResource(nomeAbsoluto));
-			VBox newVbox = loader.load();
-
-			Scene mainScene = Main.getMainScene();
-			VBox mainVbox = (VBox) ((ScrollPane) mainScene.getRoot()).getContent();
-			
-			Node mainMenu = mainVbox.getChildren().get(0);
-			mainVbox.getChildren().clear();
-			mainVbox.getChildren().add(mainMenu);
-			mainVbox.getChildren().addAll(newVbox.getChildren());
-			
-			DepartmentListController depListController = loader.getController();
-			depListController.setServico(new DepartamentoServico());
-			depListController.updateTableView();
+			T controller = loader.getController();
+			inicializingAction.accept(controller);
 
 		} catch (IOException e) {
 			Alertas.showAlerta("IO Exception", "Erro Carregando View", e.getMessage(), AlertType.ERROR);
 		}
 	}
-	
 }
