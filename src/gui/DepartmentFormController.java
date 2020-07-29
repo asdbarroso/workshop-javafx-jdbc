@@ -1,9 +1,12 @@
 package gui;
 
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.ResourceBundle;
 
 import db.DbExcepetion;
+import gui.listeners.DataChangeListener;
 import gui.util.Alertas;
 import gui.util.Constraints;
 import gui.util.Utils;
@@ -21,6 +24,7 @@ public class DepartmentFormController implements Initializable {
 
 	private Departamento departamento;
 	private DepartamentoServico servico;
+	private List<DataChangeListener> dataChangeListeners = new ArrayList<>();
 	
 	@FXML
 	private TextField txtId;
@@ -37,6 +41,10 @@ public class DepartmentFormController implements Initializable {
 	@FXML
 	private Button btCancelar;
 	
+	public void subscribeChangeListener(DataChangeListener listener) {
+		dataChangeListeners.add(listener);
+	}
+	
 	@FXML
 	public void onBtSalvarAction(ActionEvent event) {
 		
@@ -49,21 +57,25 @@ public class DepartmentFormController implements Initializable {
 		try {
 		departamento = getFormData();
 		servico.saveOrUpdate(departamento);
+		notifyDataChangeListener();
 		Utils.currentStage(event).close();
 		}
 		catch(DbExcepetion e) {
 			Alertas.showAlerta("Erro ao salvar objeto", null, e.getMessage(), Alert.AlertType.ERROR);
 		}
-		
 	}
 	
+	private void notifyDataChangeListener() {
+		for(DataChangeListener listener : dataChangeListeners) {
+			listener.onDataChanged();
+		}
+	}
+
 	private Departamento getFormData() {
-		
 		Departamento dep = new Departamento();
 		dep.setId(Utils.tryParseToInt(txtId.getText()));
 		dep.setNome(txtNome.getText());
 		return dep;
-				
 	}
 
 	@FXML
@@ -95,9 +107,5 @@ public class DepartmentFormController implements Initializable {
 		}
 		txtId.setText(String.valueOf(departamento.getId()));
 		txtNome.setText(departamento.getNome());
-		
 	}
-
-	
-	
 }
