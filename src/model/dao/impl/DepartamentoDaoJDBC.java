@@ -12,7 +12,7 @@ import java.util.Map;
 import db.DB;
 import db.DbExcepetion;
 import model.dao.DepartamentoDao;
-import modelo.entidades.Departamento;
+import model.entidades.Departamento;
 
 public class DepartamentoDaoJDBC implements DepartamentoDao {
 

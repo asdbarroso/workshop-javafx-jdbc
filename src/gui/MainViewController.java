@@ -16,7 +16,7 @@ import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.VBox;
-import modelo.entidades.DepartamentoServico;
+import model.entidades.DepartamentoServico;
 
 public class MainViewController implements Initializable {
 

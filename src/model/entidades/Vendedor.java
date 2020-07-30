@@ -1,4 +1,4 @@
-package modelo.entidades;
+package model.entidades;
 
 import java.io.Serializable;
 import java.text.SimpleDateFormat;

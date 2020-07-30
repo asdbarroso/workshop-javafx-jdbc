@@ -23,8 +23,8 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.Pane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
-import modelo.entidades.Departamento;
-import modelo.entidades.DepartamentoServico;
+import model.entidades.Departamento;
+import model.entidades.DepartamentoServico;
 
 public class DepartmentListController implements Initializable, DataChangeListener{
 

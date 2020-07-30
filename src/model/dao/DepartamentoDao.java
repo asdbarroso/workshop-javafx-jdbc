@@ -2,7 +2,7 @@ package model.dao;
 
 import java.util.List;
 
-import modelo.entidades.Departamento;
+import model.entidades.Departamento;
 
 public interface DepartamentoDao {
 

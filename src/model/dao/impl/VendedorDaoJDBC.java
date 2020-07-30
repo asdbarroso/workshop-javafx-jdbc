@@ -13,8 +13,8 @@ import java.util.Map;
 import db.DB;
 import db.DbExcepetion;
 import model.dao.VendedorDao;
-import modelo.entidades.Departamento;
-import modelo.entidades.Vendedor;
+import model.entidades.Departamento;
+import model.entidades.Vendedor;
 
 public class VendedorDaoJDBC implements VendedorDao {
 
