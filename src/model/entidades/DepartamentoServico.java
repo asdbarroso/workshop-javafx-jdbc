@@ -11,13 +11,17 @@ public class DepartamentoServico {
 	public List<Departamento> buscarTodos() {
 		return departamentoDao.buscaTodos();
 	}
-	
+
 	public void saveOrUpdate(Departamento dep) {
-		if(dep.getId() == null) {
+		if (dep.getId() == null) {
 			departamentoDao.inserir(dep);
-		}
-		else {
+		} else {
 			departamentoDao.atualizar(dep);
 		}
 	}
+	
+	public void removeDepartamento(Departamento obj) {
+		departamentoDao.apagarPorId(obj.getId());
+	}
+
 }

@@ -11,6 +11,7 @@ import java.util.Map;
 
 import db.DB;
 import db.DbExcepetion;
+import db.DbIntegrityExcepition;
 import model.dao.DepartamentoDao;
 import model.entidades.Departamento;
 
@@ -87,7 +88,7 @@ public class DepartamentoDaoJDBC implements DepartamentoDao {
 			st.executeUpdate();
 
 		} catch (SQLException e) {
-			throw new DbExcepetion(e.getMessage());
+			throw new DbIntegrityExcepition(e.getMessage());
 		} finally {
 			DB.closeStatement(st);
 		}
