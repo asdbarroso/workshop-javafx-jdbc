@@ -1,13 +1,11 @@
 package gui;
 
-import java.io.IOException;
 import java.net.URL;
 import java.util.List;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
 import application.Main;
-import db.DbExcepetion;
 import db.DbIntegrityExcepition;
 import gui.listeners.DataChangeListener;
 import gui.util.Alertas;
@@ -17,9 +15,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.scene.Scene;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
@@ -27,44 +23,42 @@ import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.layout.Pane;
-import javafx.stage.Modality;
 import javafx.stage.Stage;
-import model.entidades.Departamento;
-import model.services.DepartamentoServico;
+import model.entidades.Vendedor;
+import model.services.VendedorServico;
 
-public class DepartmentListController implements Initializable, DataChangeListener {
+public class VendedorListController implements Initializable, DataChangeListener {
 
-	private DepartamentoServico servico;
-
-	@FXML
-	private TableView<Departamento> tableViewDepartamento;
+	private VendedorServico servico;
 
 	@FXML
-	private TableColumn<Departamento, Integer> tableColumnId;
+	private TableView<Vendedor> tableViewVendedor;
 
 	@FXML
-	private TableColumn<Departamento, String> tableColumnNome;
+	private TableColumn<Vendedor, Integer> tableColumnId;
 
 	@FXML
-	private TableColumn<Departamento, Departamento> tableColumnEDIT;
+	private TableColumn<Vendedor, String> tableColumnNome;
 
 	@FXML
-	private TableColumn<Departamento, Departamento> tableColumnREMOVE;
+	private TableColumn<Vendedor, Vendedor> tableColumnEDIT;
+
+	@FXML
+	private TableColumn<Vendedor, Vendedor> tableColumnREMOVE;
 
 	@FXML
 	private Button btnNovo;
 
-	private ObservableList<Departamento> obsLista;
+	private ObservableList<Vendedor> obsLista;
 
 	@FXML
 	public void onBtNovoAction(ActionEvent event) {
 		Stage stage = gui.util.Utils.currentStage(event);
-		Departamento obj = new Departamento();
-		createDialogForm(obj, "/gui/FormularioDepartamento.fxml", stage);
+		Vendedor obj = new Vendedor();
+		createDialogForm(obj, "/gui/FormularioVendedor.fxml", stage);
 	}
 
-	public void setServico(DepartamentoServico servico) {
+	public void setVendedorServico(VendedorServico servico) {
 		this.servico = servico;
 	}
 
@@ -81,7 +75,7 @@ public class DepartmentListController implements Initializable, DataChangeListen
 		tableColumnNome.setCellValueFactory(new PropertyValueFactory<>("Nome"));
 
 		Stage stage = (Stage) Main.getMainScene().getWindow();
-		tableViewDepartamento.prefHeightProperty().bind(stage.heightProperty());
+		tableViewVendedor.prefHeightProperty().bind(stage.heightProperty());
 	}
 
 	public void updateTableView() {
@@ -89,37 +83,39 @@ public class DepartmentListController implements Initializable, DataChangeListen
 		if (servico == null) {
 			throw new IllegalStateException("Serviço esta nulo");
 		}
-		List<Departamento> lista = servico.buscarTodos();
+		List<Vendedor> lista = servico.buscarTodos();
 		obsLista = FXCollections.observableArrayList(lista);
-		tableViewDepartamento.setItems(obsLista);
+		tableViewVendedor.setItems(obsLista);
 		initEditButtons();
 		initRemoveButtons();
 	}
 
-	private void createDialogForm(Departamento obj, String nomeAbsoluto, Stage parentStage) {
+	
+	private void createDialogForm(Vendedor obj, String nomeAbsoluto, Stage parentStage) {
 
-		try {
-			FXMLLoader loader = new FXMLLoader(getClass().getResource(nomeAbsoluto));
-			Pane pane = loader.load();
-
-			DepartmentFormController controller = loader.getController();
-			controller.setDepartamento(obj);
-			controller.setDepartamentoServico(servico);
-			controller.subscribeChangeListener(this);
-			controller.updateFormData();
-
-			Stage dialogStage = new Stage();
-			dialogStage.setTitle("Cadastro de Departamento");
-			dialogStage.setScene(new Scene(pane));
-			dialogStage.setResizable(false);
-			dialogStage.initOwner(parentStage);
-			dialogStage.initModality(Modality.WINDOW_MODAL);
-			dialogStage.showAndWait();
-
-		} catch (IOException e) {
-			Alertas.showAlerta("Erro IOExcepition", "Erro ao carregar Janela", e.getMessage(), AlertType.ERROR);
-		}
+//		try {
+//			FXMLLoader loader = new FXMLLoader(getClass().getResource(nomeAbsoluto));
+//			Pane pane = loader.load();
+//
+//			DepartmentFormController controller = loader.getController();
+//			controller.setVendedor(obj);
+//			controller.setVendedorServico(servico);
+//			controller.subscribeChangeListener(this);
+//			controller.updateFormData();
+//
+//			Stage dialogStage = new Stage();
+//			dialogStage.setTitle("Cadastro de Vendedor");
+//			dialogStage.setScene(new Scene(pane));
+//			dialogStage.setResizable(false);
+//			dialogStage.initOwner(parentStage);
+//			dialogStage.initModality(Modality.WINDOW_MODAL);
+//			dialogStage.showAndWait();
+//
+//		} catch (IOException e) {
+//			Alertas.showAlerta("Erro IOExcepition", "Erro ao carregar Janela", e.getMessage(), AlertType.ERROR);
+//		}
 	}
+	
 
 	@Override
 	public void onDataChanged() {
@@ -128,11 +124,11 @@ public class DepartmentListController implements Initializable, DataChangeListen
 
 	private void initEditButtons() {
 		tableColumnEDIT.setCellValueFactory(param -> new ReadOnlyObjectWrapper<>(param.getValue()));
-		tableColumnEDIT.setCellFactory(param -> new TableCell<Departamento, Departamento>() {
+		tableColumnEDIT.setCellFactory(param -> new TableCell<Vendedor, Vendedor>() {
 			private final Button button = new Button("edit");
 
 			@Override
-			protected void updateItem(Departamento obj, boolean empty) {
+			protected void updateItem(Vendedor obj, boolean empty) {
 				super.updateItem(obj, empty);
 				if (obj == null) {
 					setGraphic(null);
@@ -140,18 +136,18 @@ public class DepartmentListController implements Initializable, DataChangeListen
 				}
 				setGraphic(button);
 				button.setOnAction(
-						event -> createDialogForm(obj, "/gui/FormularioDepartamento.fxml", Utils.currentStage(event)));
+						event -> createDialogForm(obj, "/gui/FormularioVendedor.fxml", Utils.currentStage(event)));
 			}
 		});
 	}
 
 	private void initRemoveButtons() {
 		tableColumnREMOVE.setCellValueFactory(param -> new ReadOnlyObjectWrapper<>(param.getValue()));
-		tableColumnREMOVE.setCellFactory(param -> new TableCell<Departamento, Departamento>() {
+		tableColumnREMOVE.setCellFactory(param -> new TableCell<Vendedor, Vendedor>() {
 			private final Button button = new Button("remove");
 
 			@Override
-			protected void updateItem(Departamento obj, boolean empty) {
+			protected void updateItem(Vendedor obj, boolean empty) {
 				super.updateItem(obj, empty);
 				if (obj == null) {
 					setGraphic(null);
@@ -163,7 +159,7 @@ public class DepartmentListController implements Initializable, DataChangeListen
 		});
 	}
 
-	protected void removeEntity(Departamento obj) {
+	protected void removeEntity(Vendedor obj) {
 
 		Optional<ButtonType> result = Alertas.showConfirmation("Confirmação", "Deseja apagar?");
 
@@ -172,10 +168,10 @@ public class DepartmentListController implements Initializable, DataChangeListen
 				throw new IllegalStateException("Serviço esta nulo");
 			}
 			try {
-				servico.removeDepartamento(obj);
+				servico.removeVendedor(obj);
 				updateTableView();
 			} catch (DbIntegrityExcepition e) {
-				Alertas.showAlerta("Erro ao remover Departamento", null, e.getMessage(), AlertType.ERROR);
+				Alertas.showAlerta("Erro ao remover Vendedor", null, e.getMessage(), AlertType.ERROR);
 			}
 
 		}
